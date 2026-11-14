@@ -32,7 +32,7 @@ jobs:
           packages: platform-tools
 
       - name: Install Android 37 platform
-        run: sdkmanager --channel=3 "platforms;android-37"
+        run: sdkmanager --channel=3 "platforms;android-37.0"
 
       - name: Build Release APK
         working-directory: Android/src
