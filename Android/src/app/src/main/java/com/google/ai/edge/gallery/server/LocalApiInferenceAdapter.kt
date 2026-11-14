@@ -63,6 +63,10 @@ internal class LocalApiInferenceAdapter(
       require(it > 0) { "top_k must be greater than zero." }
       apiConfigValues[ConfigKeys.TOPK.label] = it.coerceAtMost(100)
     }
+    request.max_tokens?.let {
+      require(it > 0) { "max_tokens must be greater than zero." }
+      apiConfigValues[ConfigKeys.MAX_OUTPUT_TOKENS.label] = it
+    }
     apiModel.configValues = apiConfigValues.toMap()
     apiModel.prevConfigValues = source.prevConfigValues.toMap()
     val helper = apiModel.runtimeHelper
@@ -86,7 +90,6 @@ internal class LocalApiInferenceAdapter(
 
       val extraContext = buildMap {
         put(EPHEMERAL_INFERENCE, "true")
-        request.max_tokens?.takeIf { it > 0 }?.let { put("max_output_tokens", it.toString()) }
       }
 
       val inferenceScope = CoroutineScope(currentCoroutineContext())
