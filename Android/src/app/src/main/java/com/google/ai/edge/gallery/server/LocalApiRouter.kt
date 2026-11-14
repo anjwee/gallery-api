@@ -68,7 +68,7 @@ internal class LocalApiRouter(
         writeJson(socket, 200, HealthResponse("ok"))
 
       request.method == "GET" && request.path == "/v1/models" ->
-        writeJson(socket, 200, ModelsResponse(inference.listModels().map { ApiModel(it.name) }))
+        writeJson(socket, 200, ModelsResponse(data = inference.listModels().map { ApiModel(it.name) }))
 
       request.method == "POST" && request.path == "/v1/chat/completions" ->
         handleChatCompletion(request, socket)
