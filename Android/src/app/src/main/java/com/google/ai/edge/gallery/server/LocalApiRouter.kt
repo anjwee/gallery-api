@@ -181,7 +181,7 @@ internal class LocalApiRouter(
       append("HTTP/1.1 $status $reason\r\n")
       append("Content-Type: $contentType; charset=utf-8\r\n")
       if (chunked) append("Transfer-Encoding: chunked\r\n")
-      else append("Content-Length: $contentLength\r\n")
+      else if (contentLength != null) append("Content-Length: $contentLength\r\n")
       append("Connection: close\r\n")
       append("Access-Control-Allow-Origin: *\r\n")
       append("Access-Control-Allow-Headers: Authorization, Content-Type\r\n")
