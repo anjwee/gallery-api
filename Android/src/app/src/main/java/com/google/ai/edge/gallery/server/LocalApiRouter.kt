@@ -118,7 +118,7 @@ internal class LocalApiRouter(
 
   private fun streamChatCompletion(socket: Socket, request: ChatCompletionRequest) {
     val output = socket.getOutputStream()
-    writeHeaders(output, 200, "text/event-stream", chunked = true)
+    writeHeaders(output, 200, "text/event-stream", chunked = false, contentLength = null)
     val responseId = "chatcmpl-${UUID.randomUUID()}"
     try {
       runBlocking {
@@ -167,7 +167,7 @@ internal class LocalApiRouter(
     status: Int,
     contentType: String,
     chunked: Boolean,
-    contentLength: Int = 0,
+    contentLength: Int? = 0,
   ) {
     val reason = when (status) {
       200 -> "OK"
