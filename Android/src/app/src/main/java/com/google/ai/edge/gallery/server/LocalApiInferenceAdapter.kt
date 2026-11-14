@@ -75,8 +75,8 @@ internal class LocalApiInferenceAdapter(
         request.max_tokens?.takeIf { it > 0 }?.let { put("max_output_tokens", it.toString()) }
       }
 
+      val inferenceScope = CoroutineScope(currentCoroutineContext())
       suspendCancellableCoroutine { continuation ->
-        val scope = CoroutineScope(currentCoroutineContext())
         continuation.invokeOnCancellation { helper.stopResponse(apiModel) }
         helper.runInference(
           model = apiModel,
@@ -91,7 +91,7 @@ internal class LocalApiInferenceAdapter(
               continuation.resumeWithException(IllegalStateException(message))
             }
           },
-          coroutineScope = scope,
+          coroutineScope = inferenceScope,
           extraContext = extraContext,
         )
       }
