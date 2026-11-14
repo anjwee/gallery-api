@@ -90,6 +90,7 @@ internal class LocalApiInferenceAdapter(
 
       val extraContext = buildMap {
         put(EPHEMERAL_INFERENCE, "true")
+        request.max_tokens?.takeIf { it > 0 }?.let { put("max_output_tokens", it.toString()) }
       }
 
       val inferenceScope = CoroutineScope(currentCoroutineContext())
