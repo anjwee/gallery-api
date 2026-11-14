@@ -94,7 +94,7 @@ internal class LocalApiInferenceAdapter(
       }
 
       val inferenceScope = CoroutineScope(currentCoroutineContext())
-      suspendCancellableCoroutine { continuation ->
+      suspendCancellableCoroutine<Unit> { continuation ->
         continuation.invokeOnCancellation { helper.stopResponse(apiModel) }
         helper.runInference(
           model = apiModel,
