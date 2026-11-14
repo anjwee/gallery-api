@@ -1,6 +1,7 @@
 package com.google.ai.edge.gallery.server
 
 import android.content.Context
+import com.google.ai.edge.gallery.data.ConfigKeys
 import com.google.ai.edge.gallery.data.Model
 import com.google.ai.edge.gallery.runtime.runtimeHelper
 import java.util.UUID
@@ -49,7 +50,20 @@ internal class LocalApiInferenceAdapter(
     // Preserve the original storage directory while giving this runtime instance its own identity.
     val apiModel = source.copy(name = source.name + "_api_" + UUID.randomUUID())
     apiModel.normalizedName = source.normalizedName
-    apiModel.configValues = source.configValues.toMap()
+    val apiConfigValues = source.configValues.toMutableMap()
+    request.temperature?.let {
+      require(it.isFinite()) { "temperature must be a finite number." }
+      apiConfigValues[ConfigKeys.TEMPERATURE.label] = it.coerceIn(0.0, 2.0).toFloat()
+    }
+    request.top_p?.let {
+      require(it.isFinite()) { "top_p must be a finite number." }
+      apiConfigValues[ConfigKeys.TOPP.label] = it.coerceIn(0.0, 1.0).toFloat()
+    }
+    request.top_k?.let {
+      require(it > 0) { "top_k must be greater than zero." }
+      apiConfigValues[ConfigKeys.TOPK.label] = it.coerceAtMost(100)
+    }
+    apiModel.configValues = apiConfigValues.toMap()
     apiModel.prevConfigValues = source.prevConfigValues.toMap()
     val helper = apiModel.runtimeHelper
 
