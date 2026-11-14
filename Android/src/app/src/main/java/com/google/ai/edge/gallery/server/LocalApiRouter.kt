@@ -16,6 +16,8 @@
 
 package com.google.ai.edge.gallery.server
 
+import android.util.Log
+
 import com.google.ai.edge.gallery.data.Model
 import java.io.OutputStream
 import java.net.Socket
@@ -26,6 +28,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+
+private const val TAG = "LocalApiRouter"
 
 /**
  * Runtime boundary for the HTTP API. The implementation is deliberately supplied by the app's
@@ -49,6 +53,7 @@ internal class LocalApiRouter(
   }
 
   fun handle(request: HttpRequest, socket: Socket) {
+    Log.i(TAG, "Request ${request.method} ${request.path} from ${request.remoteAddress}")
     if (request.method == "OPTIONS") {
       writeResponse(socket, 204, "", "text/plain")
       return
